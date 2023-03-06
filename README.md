@@ -6,6 +6,12 @@
 This is small implementation of Boids in Godot!
 Not finished yet, check back soon!
 
+## Instructions
+
+This isn't a standalone export yet, so you'll need Godot installed to run this!
+Just clone it into your Godot projects folder then re-scan your projects
+folder to get access to the project. 
+
 ## Background
 
 ### What are Boids?
@@ -59,6 +65,7 @@ I think, next I'd like to create a UI to manage the boid parameters and the view
 - UI to control boid parameters.
 - Environmental goals and obstacles
 - Vision cone visualization
+- Heatmaps
 - Nearest neighbors visualization
 - Flight trails
 - Translate from GodotScript to C++ or Rust using GDNative. 
