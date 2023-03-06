@@ -28,7 +28,7 @@ There's also a [really excellent video by Sebastian Lague](https://www.youtube.c
 #### 23/03/05
 
 Day 1 of this little excursion!
-I tried to implement smooth velocities and turn rates from the get go and it turned out extremely jank.
+I tried to implement smooth velocities and turn rates from the get go and it turned out extremely jank. When they weren't flying all over the place at top speeds, they completely ignored collisions and flew steadfastly off into the sunset together like lemmings.
 
 ![First attempt](./docs/BoidsFirstAttempt.gif)
 
