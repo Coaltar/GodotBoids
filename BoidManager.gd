@@ -50,27 +50,26 @@ func _process(delta):
 	for boid in boids:
 		var neighbors = get_boid_neighbors(boid)
 		
+		var neighbor_adjustments = Vector2.ZERO
+		
 		if(len(neighbors) > 0):
 			
 			var res_rule1 = rule1(boid, neighbors)
 			var res_rule2 = rule2(boid, neighbors)
 			var res_rule3 = rule3(boid, neighbors)
 			
-			var ideal_vel = boid.velocity + res_rule1 + res_rule2 + res_rule3
 			
-			#var ideal_direction = ideal_vel.normalized()
-			#var ideal_mag = ideal_vel.length()
-			#var actual_vel = boid.velocity.slerp(ideal_vel, delta)
-			boid.update_velocity(ideal_vel, delta)
+			neighbor_adjustments = res_rule1 + res_rule2 + res_rule3
+			
+			
 			
 			pass
 		else:
 			pass
 			
-			
-		
-
-	
+		var adj_bpunds = boundary_rule(boid)
+		var ideal_vel = boid.velocity + neighbor_adjustments + adj_bpunds
+		boid.update_velocity(ideal_vel, delta)
 	pass
 
 func get_boid_neighbors(boid):
@@ -125,5 +124,27 @@ func rule3(boid, neighbors):
 	
 	return vel * RULE3_FACTOR
 	
+
 	
-#func boundary_rule
+func boundary_rule(boid):
+	var XMIN = 100
+	var XMAX = 800;
+	var YMIN = 100;
+	var YMAX = 800;
+	
+	var spd_adj = 10
+	var adj = Vector2.ZERO
+	
+	
+	if(boid.position.x < XMIN ):
+		adj.x += spd_adj
+	if(boid.position.x > XMAX ):
+		adj.x -= spd_adj
+	if(boid.position.y < YMIN ):
+		adj.y += spd_adj
+	if(boid.position.y > YMAX ):
+		adj.y -= spd_adj
+		
+	return adj
+	
+	
