@@ -28,7 +28,7 @@ There's also a [really excellent video by Sebastian Lague](https://www.youtube.c
 #### 23/03/05
 
 Day 1 of this little excursion!
-I tried implement smooth velocities and turn rates from the get go and it turned out extremely jank.
+I tried to implement smooth velocities and turn rates from the get go and it turned out extremely jank.
 
 ![First attempt]("./docs/BoidsFirstAttempt.gif")
 
