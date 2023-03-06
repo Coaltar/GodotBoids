@@ -30,14 +30,14 @@ There's also a [really excellent video by Sebastian Lague](https://www.youtube.c
 Day 1 of this little excursion!
 I tried to implement smooth velocities and turn rates from the get go and it turned out extremely jank.
 
-![First attempt]("./docs/BoidsFirstAttempt.gif")
+![First attempt](./docs/BoidsFirstAttempt.gif)
 
 
 Eventually, I gave up and used the [peudo code](https://vergenet.net/~conrad/boids/pseudocode.html).
 It turned out much nicer. It was initially very janky, but after making some minor adjustments 
 I was able to get the smooth motion I wanted
 
-![Second Attempt]("./docs/PseudoCodeImplementation1.gif")
+![Second Attempt](./docs/PseudoCodeImplementation1.gif)
 
 I think the required thought process for projects like this should be like making a sculpture.
 Start from the general and simple, get the rough outline, then refine.
