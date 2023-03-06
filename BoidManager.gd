@@ -2,14 +2,18 @@ extends Node2D
 
 var boid_scene = preload("res://Boid.tscn")
 
-const MAP_DIM = 500
+const MAP_DIM = 100
 const MAX_BOIDS = 25
 
 
-const min_proximity = 100
+const min_proximity = 15
 
-const vision_distance = 500
+const vision_distance = 1000
 const vision_radius = PI/3
+
+const RULE1_FACTOR = 0.01;
+const RULE2_FACTOR = 2;
+const RULE3_FACTOR = 0.125;
 
 var boids = []
 
@@ -26,8 +30,8 @@ func spawn_boids():
 	boids.resize(MAX_BOIDS)
 	for i in range(MAX_BOIDS):
 		
-		var x = MAP_DIM/2 + randi() % + MAP_DIM
-		var y = MAP_DIM/2 + randi() % + MAP_DIM
+		var x = 200 + randi() % + MAP_DIM
+		var y = 200 + randi() % + MAP_DIM
 		var spawn = Vector2(x,y)
 		
 		var x_dir = -1 + 2*randf() 
@@ -36,7 +40,6 @@ func spawn_boids():
 		
 		var boid = boid_scene.instance()
 		
-		boid.bearing = bearing
 		boid.position = spawn
 		add_child(boid)
 		boids[i]= boid
@@ -49,52 +52,18 @@ func _process(delta):
 		
 		if(len(neighbors) > 0):
 			
-			var positions = []
-			var bearings = []
-			#var velocities = []
+			var res_rule1 = rule1(boid, neighbors)
+			var res_rule2 = rule2(boid, neighbors)
+			var res_rule3 = rule3(boid, neighbors)
 			
-			var nearest_distance = self.position.distance_to(neighbors[0].position)
-			var nearest_boid = neighbors[0]
+			var ideal_vel = boid.velocity + res_rule1 + res_rule2 + res_rule3
 			
-			for n in neighbors:
-				positions.append(n.position)
-				bearings.append(n.bearing)
-				#velocities.append(n.velocity * n.bearing)
-				
-				var dist = boid.position.distance_to(n.position)
-				if(dist < nearest_distance):
-					nearest_distance = dist
-					nearest_boid = n
+			#var ideal_direction = ideal_vel.normalized()
+			#var ideal_mag = ideal_vel.length()
+			#var actual_vel = boid.velocity.slerp(ideal_vel, delta)
+			boid.update_velocity(ideal_vel, delta)
 			
-			
-			var desired_pos = avg_vec2(positions)
-			if(nearest_distance < min_proximity):
-				desired_pos = (boid.position - nearest_boid.position).normalized() * (min_proximity - nearest_distance)
-
-			
-			var desired_bearing = avg_vec2(bearings)
-			var offset_bearing = (desired_pos - boid.position).normalized()
-			desired_bearing = avg_vec2([desired_bearing, offset_bearing]).normalized()
-			
-			var angle_delta = boid.bearing.angle_to(desired_bearing)
-			#var accel_val = -1 + 2*abs(angle_delta) / PI
-			#var avg_vel = avg_vec2(velocities)
-			
-			
-			boid.rotate_towards(delta, desired_bearing)
-			
-			
-			#boid.adjust_speed(accel_val)
-			#var target_vel = 
-			#var target_rot = 
-			
-			
-			#if(has_neighbors):
-		
-			
-			#calculate average position, bearing, and velocity 
-			#target that position
-			#then shift away from nearest neighbor
+			pass
 		else:
 			pass
 			
@@ -106,7 +75,7 @@ func _process(delta):
 
 func get_boid_neighbors(boid):
 	var nearby = []
-	var heading = boid.bearing
+	var heading = boid.velocity.normalized()
 	for other in boids:
 		if(other == boid):
 			continue
@@ -122,19 +91,39 @@ func get_boid_neighbors(boid):
 	return nearby
 	
 
-func avg_vec2(vecs):
-	var x = 0
-	var y = 0
-	var n = 0
-	for vec in vecs:
-		x += vec.x
-		y += vec.y
-		n += 1
+func rule1(boid, neighbors):
 	
-	return Vector2(x/n, y/n)
-		
-		
+	var total_pos = Vector2.ZERO
 	
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-#func _process(delta):
-#	pass
+	for n in neighbors:
+		total_pos += n.position
+	total_pos = total_pos / (len(neighbors))
+	
+	var offset = total_pos - boid.position
+	return offset * RULE1_FACTOR
+	
+
+func rule2(boid, neighbors):
+	
+	var pos = Vector2.ZERO
+	
+	for n in neighbors:
+		var offset = boid.position - n.position
+		if(offset.length() < min_proximity):
+			pos += offset
+	
+	return pos * RULE2_FACTOR
+
+
+func rule3(boid, neighbors):
+
+	var vel = Vector2.ZERO
+	
+	for n in neighbors:
+		vel += n.velocity
+	vel = vel/len(neighbors)
+	
+	return vel * RULE3_FACTOR
+	
+	
+#func boundary_rule

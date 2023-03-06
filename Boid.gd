@@ -1,42 +1,42 @@
 extends Node2D
 
 
-# Declare member variables here. Examples:
-# var a = 2
-# var b = "text"
+const min_speed = 1;
+const max_speed = 5;
+const TURN_RATE = 0.5
+const ACCEL_RATE = 0.05;
 
-const min_speed = 0;
-const max_speed = 50;
-const turn_rate = 30;
-const min_distance = 10;
 
-var count = randi() % 1000
-#var has_neighbors = false
-#var neighbor_avg_position = Vector2.ZERO
-#var neighbor_avg_bearing =  Vector2.ZERO
-#var closest_neighbor
+var velocity = Vector2(randf(), randf())
+var prev_vel = Vector2.ZERO
 
-var velocity = 100
-var bearing = Vector2.ZERO
-
-func _process(delta):
+func _process(_delta):
 	
-	#self.count += delta
-	#var newbearing = Vector2(cos(count), sin(count))
-	#self.rotate_towards(delta, newbearing)
+	rotate_towards_velocity()
+	
+	self.position += self.velocity
+	
+	pass
+
+func rotate_towards_velocity():
+	self.rotation = self.velocity.normalized().angle()
+	pass
+
+func update_velocity(velocity, weight):
+	
+	var direction = self.velocity.normalized().slerp(velocity.normalized(), TURN_RATE)
+	var magnitude = lerp(self.velocity.length(), velocity.length(), ACCEL_RATE)
+	magnitude = clamp(magnitude, min_speed, max_speed)
+	self.velocity = direction * magnitude
+	
+	#self.prev_vel = self.velocity
+	#self.velocity = self.velocity.slerp(velocity, 1)
 	
 	
-	# MOVE
-	self.position += self.bearing*self.velocity*delta
-	# Rotate
-	self.rotation = self.bearing.angle()
-
-
-func rotate_towards(delta, target):
-	self.bearing = self.bearing.slerp(target.normalized(), delta)
-
-#func adjust_speed(delta, target):
-#	self.velocity = self.velocity.lerp(self.velocity, target, delta)
-
-func adjust_speed(accel):
-	self.velocity += accel;
+	#var clamped_vel = velocity.normalized() * clamp(velocity.length(), min_speed, max_speed)
+	#var clamped_mag =  clamp(velocity.length(), min_speed, max_speed)
+	#var current_mag = self.velocity.length()
+	
+	
+	
+	
